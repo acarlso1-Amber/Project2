@@ -31,6 +31,9 @@ import mdp, util
 from learningAgents import ValueEstimationAgent
 import collections
 
+#Travis Mewborne
+#Project 2 Question 1
+#March 21, 2022
 class ValueIterationAgent(ValueEstimationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -79,8 +82,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
 
+    #Travis Mewborne 3/15/22
     def computeActionFromValues(self, state):
         """
+          computes the best action according to the value function given by self.values
+
           The policy is the best action in the given state
           according to the values currently stored in self.values.
 
@@ -89,6 +95,16 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
+        print("---hi----")
+        print("values:\t",self.values)
+        print("state:\t",state)
+        #actions = mdp.getPossibleActions(state)
+        #print("p actions:\t",actions)
+        print("---bye---")
+
+        #Returning none if final state
+        if state=="TERMINAL_STATE":
+            return "None"
         util.raiseNotDefined()
 
     def getPolicy(self, state):
