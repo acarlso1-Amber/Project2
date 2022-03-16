@@ -65,6 +65,7 @@ class ValueIterationAgent(ValueEstimationAgent):
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        print("runValueIteration called")
 
 
     def getValue(self, state):
@@ -80,10 +81,12 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
+        print("computeQValueFromValues called")
         util.raiseNotDefined()
 
     #Travis Mewborne 3/15/22
     def computeActionFromValues(self, state):
+        print("computeActionFromValues called")
         """
           computes the best action according to the value function given by self.values
 
