@@ -42,6 +42,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         (see mdp.py) on initialization and runs value iteration
         for a given number of iterations using the supplied
         discount factor.
+
+
+
+        python3.7 autograder.py -q q1
+        python3.7 gridworld.py -a value -i 100 -k 10
     """
     def __init__(self, mdp, discount = 0.9, iterations = 100):
         """
@@ -84,7 +89,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         print("computeQValueFromValues called")
         util.raiseNotDefined()
 
-    #Travis Mewborne 3/15/22
+    #Travis, Amber, Wen 3/22/22
     def computeActionFromValues(self, state):
         print("computeActionFromValues called")
         """
@@ -101,12 +106,13 @@ class ValueIterationAgent(ValueEstimationAgent):
         print("---hi----")
         print("values:\t",self.values)
         print("state:\t",state)
-        #actions = mdp.getPossibleActions(state)
-        #print("p actions:\t",actions)
+        print(self.mdp.isTerminal(state))
+        actions = self.mdp.getPossibleActions(state)
+        print("p actions:\t",actions)
         print("---bye---")
 
         #Returning none if final state
-        if state=="TERMINAL_STATE":
+        if self.mdp.isTerminal(state):
             return "None"
         util.raiseNotDefined()
 
