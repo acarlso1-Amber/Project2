@@ -1,0 +1,126 @@
+Values at iteration 0 are correct.
+   Student/correct solution:
+ values_k_0: """
+        __________       0.0000   __________
+            0.0000       0.0000       0.0000
+            0.0000       0.0000       0.0000
+            0.0000       0.0000       0.0000
+            0.0000       0.0000       0.0000
+            0.0000       0.0000       0.0000
+        __________       0.0000   __________
+"""
+
+
+Q-Values at iteration 0 for action exit are correct.
+   Student/correct solution:
+ q_values_k_0_action_exit: """
+        __________      10.0000   __________
+         -100.0000      illegal    -100.0000
+         -100.0000      illegal    -100.0000
+         -100.0000      illegal    -100.0000
+         -100.0000      illegal    -100.0000
+         -100.0000      illegal    -100.0000
+        __________       1.0000   __________
+"""
+
+
+Q-Values at iteration 0 for action east are NOT correct.
+   Student solution:
+ q_values_k_0_action_east: """
+        __________      illegal   __________
+           illegal      -3.3956      illegal
+           illegal      -3.3953      illegal
+           illegal      -3.3894      illegal
+           illegal      -3.2494      illegal
+           illegal       0.0425      illegal
+        __________      illegal   __________
+"""
+
+
+   Correct solution:
+ q_values_k_0_action_east: """
+        __________      illegal   __________
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+        __________      illegal   __________
+"""
+
+
+Q-Values at iteration 0 for action south are NOT correct.
+   Student solution:
+ q_values_k_0_action_south: """
+        __________      illegal   __________
+           illegal     -65.3699      illegal
+           illegal     -65.3654      illegal
+           illegal     -65.2583      illegal
+           illegal     -62.7400      illegal
+           illegal      -3.4850      illegal
+        __________      illegal   __________
+"""
+
+
+   Correct solution:
+ q_values_k_0_action_south: """
+        __________      illegal   __________
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+        __________      illegal   __________
+"""
+
+
+Q-Values at iteration 0 for action north are NOT correct.
+   Student solution:
+ q_values_k_0_action_north: """
+        __________      illegal   __________
+           illegal      -4.2500      illegal
+           illegal      -4.2500      illegal
+           illegal      -4.2500      illegal
+           illegal      -4.2500      illegal
+           illegal      -4.2500      illegal
+        __________      illegal   __________
+"""
+
+
+   Correct solution:
+ q_values_k_0_action_north: """
+        __________      illegal   __________
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+        __________      illegal   __________
+"""
+
+
+Q-Values at iteration 0 for action west are NOT correct.
+   Student solution:
+ q_values_k_0_action_west: """
+        __________      illegal   __________
+           illegal     -79.8956      illegal
+           illegal     -79.8953      illegal
+           illegal     -79.8894      illegal
+           illegal     -79.7494      illegal
+           illegal     -76.4575      illegal
+        __________      illegal   __________
+"""
+
+
+   Correct solution:
+ q_values_k_0_action_west: """
+        __________      illegal   __________
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+           illegal       0.0000      illegal
+        __________      illegal   __________
+"""
+
+

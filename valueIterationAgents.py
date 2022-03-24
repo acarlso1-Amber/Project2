@@ -86,7 +86,29 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
+        transitions = self.mdp.getTransitionStatesAndProbs(state, action)
+        print("cqvf transitions", transitions)
+        Q=0
+        for transition in transitions:
+            #print("cqfv ",transition)
+            statePrime = transition[0]
+            reward = self.mdp.getReward(state, action, statePrime)
+            probability = transition[1]
+            #value = self.computeActionFromValues(transition[0])
+            #value = self.computeQValueFromValues(statePrime)
+            #value = self.getValue(statePrime)
+            value = self.values[statePrime]
+            #print("cqfv ",reward)
+            #print("cqfv ",probability)
+            #print("cqfv ",value)
+            #if (value == "None"):
+            #    Q += probability * reward
+            #else:
+            Q += probability * (reward + value*self.discount)
+        self.values[state] = Q
+        return Q
         print("computeQValueFromValues called")
+        #return self.values[state]
         util.raiseNotDefined()
 
     #Travis, Amber, Wen 3/22/22
@@ -104,16 +126,75 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         "*** YOUR CODE HERE ***"
         print("---hi----")
-        print("values:\t",self.values)
-        print("state:\t",state)
-        print(self.mdp.isTerminal(state))
-        actions = self.mdp.getPossibleActions(state)
-        print("p actions:\t",actions)
-        print("---bye---")
 
         #Returning none if final state
         if self.mdp.isTerminal(state):
             return "None"
+
+        actions = self.mdp.getPossibleActions(state)
+
+        #if (actions[0]=="exit"):
+        #    transitions = self.mdp.getTransitionStatesAndProbs(state, actions[0])
+        #    return self.mdp.getReward(state, actions[0], transitions[0][0])
+
+        
+        print("values:\t",self.values)
+        print("state:\t",state)
+        print(self.mdp.isTerminal(state))
+        
+        print("Possible actions from state:\t",actions)
+        print("Extracted Q Value: ", self.values[state])
+        print("States: ", self.mdp.getStates())
+        for action in actions:
+            print("\tFOR ACTION:",action)
+            transitions = self.mdp.getTransitionStatesAndProbs(state, action)
+            #print("\t\tTransition states ", transitions)
+            #for transition in transitions:
+            #    print("\t\t\t",transition,"\tReward: ",self.mdp.getReward(state, action, transition[0]))
+            #print("\tReward ", self.mdp.getReward(state, action, transitions[0][0]))
+        print("Actually doing stuff")
+        
+
+
+        results = []
+        
+        for action in actions:
+            Q = self.computeQValueFromValues(state,action)
+            results.append((action,Q))
+
+        resultsDec = (sorted(results, key = lambda x: x[1]))
+        resultsAsc = resultsDec[::-1]
+
+        print(resultsAsc    )
+
+        QStar = resultsAsc[0][1]
+        BestAction = resultsAsc[0][0]
+
+
+        """
+        AStart = results[0][0]
+        QStar = results[0][1]
+        for result in results:
+            a = result[0]
+            q = result[1]
+            if q>QStar:
+                q=QStar
+                AStart=a"""
+        
+       
+
+        print ("results ",results, "BEST",BestAction,"//",QStar)
+        print("---bye---")
+
+        return(BestAction)
+
+        
+
+        
+
+        
+        
+        #return actions[0]
         util.raiseNotDefined()
 
     def getPolicy(self, state):
