@@ -73,12 +73,12 @@ class ValueIterationAgent(ValueEstimationAgent):
         print("iterations", self.iterations)
         print("runValueIteration called")
 
-        currentIteration = self.iterations 
+        currentIteration = self.iterations
         #this is self.mdp bc we need to call getStates on the mdp
         allPossibleStates = self.mdp.getStates()
 
         #creates somewhere we can store data (as mentioned in class)
-        values = util.Counter() 
+        #values = util.Counter() 
 
         #as long as our current iteration doesn't it zero
         while (currentIteration > 0): 
@@ -87,11 +87,11 @@ class ValueIterationAgent(ValueEstimationAgent):
                 print("this is currentIteration: ", currentIteration)
                 if not(self.mdp.isTerminal(currentState)):
                     action = self.getAction(currentState) 
-                    values[currentState] = self.computeQValueFromValues(currentState, action)
-                    currentIteration -= 1
+                    self.values[currentState] = self.computeQValueFromValues(currentState, action)
                 else: 
                     continue
-            self.values = values.copy()
+            currentIteration -= 1
+            self.values = self.values.copy()
 
        
 
