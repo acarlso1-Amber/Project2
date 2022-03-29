@@ -30,6 +30,7 @@ import mdp, util
 
 from learningAgents import ValueEstimationAgent
 import collections
+import sys
 
 #Travis Mewborne
 #Project 2 Question 1
@@ -73,7 +74,8 @@ class ValueIterationAgent(ValueEstimationAgent):
         print("iterations", self.iterations)
         print("runValueIteration called")
 
-        currentIteration = self.iterations
+        
+        #currentIteration = self.iterations
         #this is self.mdp bc we need to call getStates on the mdp
         allPossibleStates = self.mdp.getStates()
 
@@ -81,18 +83,23 @@ class ValueIterationAgent(ValueEstimationAgent):
         #values = util.Counter() 
 
         #as long as our current iteration doesn't it zero
-        while (currentIteration > 0): 
-            print("gets in the while loop")
-            for currentState in allPossibleStates: 
-                print("this is currentIteration: ", currentIteration)
-                if not(self.mdp.isTerminal(currentState)):
-                    action = self.getAction(currentState) 
-                    self.values[currentState] = self.computeQValueFromValues(currentState, action)
-                else: 
-                    continue
-            currentIteration -= 1
-            self.values = self.values.copy()
+        # print("current iteration: ", self.iterations)
+        # while (self.iterations > 0): 
+        #     # print("gets in the while loop")
+        #     for currentState in allPossibleStates: 
+        #         # print("this is currentIteration: ", currentIteration)
+        #         if not(self.mdp.isTerminal(currentState)):
+        #             action = self.getAction(currentState) 
+        #             self.values[currentState] = self.computeQValueFromValues(currentState, action)
+        #         else: 
+        #             continue
+        #     self.iterations -= 1
 
+        for i in range(self.iterations):
+            for state in allPossibleStates: 
+                if not (self.mdp.isTerminal(state)):
+                    action = self.getAction(state) 
+                    self.values[state] = self.computeQValueFromValues(state, action)
        
 
     def getValue(self, state):
@@ -108,19 +115,22 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        print("computeQValuesFromValues is called")
-        transitions = self.mdp.getTransitionStatesAndProbs(state, action)
-        Q=0
-        for transition in transitions:
-            statePrime = transition[0]
-            reward = self.mdp.getReward(state, action, statePrime)
-            probability = transition[1]
+        Q = 0
+        transitions = self.mdp.getTransitionStatesAndProbs(state, action) # list of tuples of --> statePrime, probability
+
+        for statePrime, probability in transitions: 
+            print("state: ", state)
+            print("statePrime", statePrime)
+            print("probability: ", probability)
             value = self.values[statePrime]
-            Q += probability * (reward + value*self.discount)
-        self.values[state] = Q
+            reward = self.mdp.getReward(state, action, statePrime)
+            print("reward :", reward)
+            Q += probability * (reward + (value*self.discount))#(pow(self.discount, self.iterations))))
+            #self.values[state] = Q 
         return Q
-        print("computeQValueFromValues called")
-        util.raiseNotDefined()
+
+        # print("computeQValueFromValues called")
+        # util.raiseNotDefined()
 
     #Travis, Amber, Wen 3/22/22
     def computeActionFromValues(self, state):
@@ -139,26 +149,35 @@ class ValueIterationAgent(ValueEstimationAgent):
         print("computeActionFromValues is called")
 
         if self.mdp.isTerminal(state):
-            return "None"
+            return None
 
         actions = self.mdp.getPossibleActions(state)        
 
+        bestAction = actions[0]
+        bestQ = - sys.maxsize - 1 #there is no minint :(
 
-        results = []
-        
         for action in actions:
             Q = self.computeQValueFromValues(state,action)
-            results.append((action,Q))
+            if Q > bestQ:
+                bestQ = Q
+                bestAction = action
+        return bestAction
 
-        resultsDec = (sorted(results, key = lambda x: x[1]))
-        resultsAsc = resultsDec[::-1]
+        # results = []
+        
+        # for action in actions:
+        #     Q = self.computeQValueFromValues(state,action)
+        #     results.append((action,Q))
 
-        QStar = resultsAsc[0][1]
-        BestAction = resultsAsc[0][0]
+        # resultsDec = (sorted(results, key = lambda x: x[1]))
+        # resultsAsc = resultsDec[::-1]
+
+        # QStar = resultsAsc[0][1]
+        # BestAction = resultsAsc[0][0]
 
 
-        return(BestAction)
-        util.raiseNotDefined()
+        # return(BestAction)
+        # util.raiseNotDefined()
 
     def getPolicy(self, state):
         print("getPolicy is called")
