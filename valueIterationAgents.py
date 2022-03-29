@@ -26,6 +26,7 @@
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
 
+from multiprocessing.sharedctypes import Value
 import mdp, util
 
 from learningAgents import ValueEstimationAgent
@@ -67,6 +68,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.iterations = iterations
         self.values = util.Counter() # A Counter is a dict with default 0
         self.runValueIteration()
+        self.n = 0
 
     def runValueIteration(self):
         # Write value iteration code here
@@ -218,9 +220,31 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
               mdp.isTerminal(state)
         """
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
+        
 
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
+
+        states = self.mdp.getStates()
+        lenStates = len(states)
+
+
+
+        for i in range(self.iterations):
+            n = i % lenStates
+            if not(self.mdp.isTerminal(states[n])):
+                action = self.getAction(states[n])
+                self.values[states[n]] = self.computeQValueFromValues(states[n], action)
+
+
+
+        # n = ValueIterationAgent.n
+
+        # for i in range(self.iterations):
+        #     action = self.getAction(states[n])
+        #     self.values[states[n]] = self.computeQValueFromValues(states[n], action)
+        # n = n + 1
+
 
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     """
