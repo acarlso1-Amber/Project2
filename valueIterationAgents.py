@@ -33,7 +33,7 @@ from learningAgents import ValueEstimationAgent
 import collections
 import sys
 
-#Travis Mewborne
+
 #Project 2 Question 1
 #March 21, 2022
 class ValueIterationAgent(ValueEstimationAgent):
@@ -73,8 +73,8 @@ class ValueIterationAgent(ValueEstimationAgent):
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        print("iterations", self.iterations)
-        print("runValueIteration called")
+        #print("iterations", self.iterations)
+        #print("runValueIteration called")
 
         
         #currentIteration = self.iterations
@@ -121,12 +121,12 @@ class ValueIterationAgent(ValueEstimationAgent):
         transitions = self.mdp.getTransitionStatesAndProbs(state, action) # list of tuples of --> statePrime, probability
 
         for statePrime, probability in transitions: 
-            print("state: ", state)
-            print("statePrime", statePrime)
-            print("probability: ", probability)
+            #print("state: ", state)
+            #print("statePrime", statePrime)
+            #print("probability: ", probability)
             value = self.values[statePrime]
             reward = self.mdp.getReward(state, action, statePrime)
-            print("reward :", reward)
+            #print("reward :", reward)
             Q += probability * (reward + (value*self.discount))#(pow(self.discount, self.iterations))))
             #self.values[state] = Q 
         return Q
@@ -134,9 +134,9 @@ class ValueIterationAgent(ValueEstimationAgent):
         # print("computeQValueFromValues called")
         # util.raiseNotDefined()
 
-    #Travis, Amber, Wen 3/22/22
+    #Travis, Amber, Wen 3/29/22
     def computeActionFromValues(self, state):
-        print("computeActionFromValues called")
+        #print("computeActionFromValues called")
         """
           computes the best action according to the value function given by self.values
 
@@ -148,7 +148,7 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        print("computeActionFromValues is called")
+        #print("computeActionFromValues is called")
 
         if self.mdp.isTerminal(state):
             return None
@@ -164,6 +164,20 @@ class ValueIterationAgent(ValueEstimationAgent):
                 bestQ = Q
                 bestAction = action
         return bestAction
+
+
+    def computeBestQ(self,state):
+        actions = self.mdp.getPossibleActions(state)        
+
+        qs = []
+        for action in actions:
+            Q = self.computeQValueFromValues(state,action)
+            qs.append(Q)
+
+        if len(qs) == 0:
+            return 0
+
+        return max(qs)
 
         # results = []
         
@@ -182,18 +196,19 @@ class ValueIterationAgent(ValueEstimationAgent):
         # util.raiseNotDefined()
 
     def getPolicy(self, state):
-        print("getPolicy is called")
+        #print("getPolicy is called")
         return self.computeActionFromValues(state)
 
     def getAction(self, state):
-        print("getAction is called")
+        #print("getAction is called")
         "Returns the policy at the state (no exploration)."
         return self.computeActionFromValues(state)
 
     def getQValue(self, state, action):
-        print("getQValue is called")
+        #print("getQValue is called")
         return self.computeQValueFromValues(state, action)
 
+#Travis, Wen 3/29/2022
 class AsynchronousValueIterationAgent(ValueIterationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -259,10 +274,53 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
           Your prioritized sweeping value iteration agent should take an mdp on
           construction, run the indicated number of iterations,
           and then act according to the resulting policy.
+
+          python3.7 gridworld.py -a priosweepvalue -i 1000
+          python3.7 autograder.py -q q5
         """
         self.theta = theta
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
+        #we define the predecessors of a state s as all states that have a nonzero probability of reaching s by taking some action a.
+        states = self.mdp.getStates()
+        predecessorAssociations = {}
+        for state in states:
+            actions = self.mdp.getPossibleActions(state)
+            predecessors=[]
+            for action in actions:
+                transitions = self.mdp.getTransitionStatesAndProbs(state, action) #returns [(state,probability)]
+                for statePrime,probability in transitions:
+                    if probability != 0 and (not statePrime in predecessors):
+                        predecessors.append(statePrime)
+            predecessorAssociations[state] = tuple(predecessors)
+        #print(predecessorAssociations)
 
+
+        
+        pq = util.PriorityQueue()
+
+        #Build pq
+        for state in states:
+            if (not self.mdp.isTerminal(state)):
+                v = self.values[state]
+                q = self.computeBestQ(state)
+                diff = abs(v-q)
+                pq.push(state,-diff)
+        
+        #Evaluate
+        for i in range(self.iterations-1):
+            if (not pq.isEmpty()):
+                state = pq.pop()
+                if not self.mdp.isTerminal(state):
+                    action = self.getAction(state) 
+                    self.values[state] = self.computeQValueFromValues(state, action)
+                    predecessors = predecessorAssociations[state]
+                    for predecessor in predecessors:
+                        v = self.values[predecessor]
+                        q = self.computeBestQ(predecessor)
+                        diff = abs(v-q)
+                        if diff > self.theta:
+                            pq.update(predecessor,-diff)
+        
