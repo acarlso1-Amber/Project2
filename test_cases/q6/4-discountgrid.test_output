@@ -1,0 +1,108 @@
+Q-Values at iteration 3000 for action 'west' are NOT correct.   Student solution:
+	q_values_k_3000_action_west: """
+           illegal       6.6144      illegal       7.8180       5.6508
+           illegal       4.1136   __________       5.9353       4.8214
+           illegal       2.0993      illegal       3.6348       3.3468
+           illegal       1.6609   __________   __________       2.0029
+           illegal       0.9396       0.5150       0.5384       0.9456
+"""
+
+   Correct solution:
+	q_values_k_3000_action_west: """
+           illegal      -6.2001      illegal       7.5146       4.9014
+           illegal      -5.4013   __________       4.0484       3.4126
+           illegal      -8.0399      illegal       0.9653       1.6081
+           illegal      -7.4767   __________   __________       0.3934
+           illegal      -6.3432       0.0179       0.0188       0.1028
+"""
+
+Q-Values at iteration 3000 for action 'south' are NOT correct.   Student solution:
+	q_values_k_3000_action_south: """
+           illegal       6.5493      illegal       7.5757       5.2195
+           illegal       4.2885   __________       5.9353       4.5830
+           illegal       2.9385      illegal       4.1836       3.1942
+           illegal       1.6672   __________   __________       1.4907
+           illegal      -0.0458       0.5150       0.5384       0.8953
+"""
+
+   Correct solution:
+	q_values_k_3000_action_south: """
+           illegal      -0.3521      illegal       3.6948       2.9139
+           illegal      -0.5605   __________       2.1346       1.5674
+           illegal       0.2093      illegal       1.5389       0.5521
+           illegal      -0.5505   __________   __________       0.1006
+           illegal      -1.8501       0.0060       0.0514       0.1223
+"""
+
+Q-Values at iteration 3000 for action 'north' are NOT correct.   Student solution:
+	q_values_k_3000_action_north: """
+           illegal       7.7757      illegal       7.7398       5.4419
+           illegal       5.7650   __________       5.9952       4.7576
+           illegal       3.0893      illegal       4.5429       3.2554
+           illegal       1.7575   __________   __________       2.1220
+           illegal       1.0124       0.4910       0.4443       0.9959
+"""
+
+   Correct solution:
+	q_values_k_3000_action_north: """
+           illegal       4.3205      illegal       6.1517       3.8095
+           illegal       4.4238   __________       5.2284       3.5129
+           illegal       1.0694      illegal       3.6867       2.0418
+           illegal       0.3423   __________   __________       1.0655
+           illegal       0.0073       0.0079       0.0484       0.3768
+"""
+
+Q-Values at iteration 3000 for action 'east' are NOT correct.   Student solution:
+	q_values_k_3000_action_east: """
+           illegal       8.4144      illegal       7.5757       5.2726
+           illegal       4.9657   __________       5.7960       4.7732
+           illegal       3.0893      illegal       4.4481       3.3133
+           illegal       1.7400   __________   __________       2.0029
+           illegal       0.9010       0.4517       0.5467       0.8953
+"""
+
+   Correct solution:
+	q_values_k_3000_action_east: """
+           illegal       8.0584      illegal       3.7245       3.3947
+           illegal       2.0499   __________       3.2373       2.1742
+           illegal       0.8687      illegal       1.7398       1.2671
+           illegal       0.2927   __________   __________       0.6669
+           illegal       0.0239       0.0097       0.1611       0.2051
+"""
+
+Values are NOT correct.   Student solution:
+	values: """
+          -10.0000       8.4144      10.0000       7.8180       5.6508
+          -10.0000       5.7650   __________       5.9952       4.8214
+          -10.0000       3.0893       1.0000       4.5429       3.3468
+          -10.0000       1.7575   __________   __________       2.1220
+           -9.9999       1.0124       0.5150       0.5467       0.9959
+"""
+
+   Correct solution:
+	values: """
+          -10.0000       8.0584      10.0000       7.5146       4.9014
+          -10.0000       4.4238   __________       5.2284       3.5129
+          -10.0000       1.0694       1.0000       3.6867       2.0418
+          -10.0000       0.3423   __________   __________       1.0655
+           -9.9999       0.0239       0.0179       0.1611       0.3768
+"""
+
+Policy is NOT correct.   Student solution:
+	policy: """
+        exit         east         exit         west         west      
+        exit         north        __________   north        west      
+        exit         north        exit         north        west      
+        exit         north        __________   __________   north     
+        exit         north        west         east         north
+"""
+
+   Correct solution:
+	policy: """
+        exit         east         exit         west         west      
+        exit         north        __________   north        north     
+        exit         north        exit         north        north     
+        exit         north        __________   __________   north     
+        exit         east         west         east         north
+"""
+

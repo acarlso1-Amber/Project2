@@ -55,7 +55,7 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        if state in self.values:
+        if (state, action) in self.values:
           return self.values[(state, action)]
         else:
           return 0.0
@@ -77,7 +77,6 @@ class QLearningAgent(ReinforcementAgent):
           pairs.append((action, self.getQValue(state, action)))
         if pairs == []:
           return 0.0
-        print("pairs: ", pairs)
         best = pairs[0]
         for (action, q) in pairs:
           if q > best[1]:
@@ -93,16 +92,16 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         #almost identical to compmputeValueFromQValues
-        pairs = []
-        for action in self.getLegalActions:
-          pairs.add(action, self.getQValue(state, action))
+        pairs = []  #(action, Q-value for that action)
+        for action in self.getLegalActions(state):
+          pairs.append((action, self.getQValue(state, action)))
         if pairs == []:
           return None
         best = pairs[0]
         for (action, q) in pairs:
           if q > best[1]:
             best = (action, q)
-        return best[0]  #returns the best action
+        return best[0]
         util.raiseNotDefined()
 
     def getAction(self, state):
@@ -120,7 +119,9 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        return self.computeActionFromQValues(self, state)  #temporary to make sure other things work
+        if util.flipCoin(self.epsilon):
+          return random.choice(legalActions)
+        return self.computeActionFromQValues(state)  #temporary to make sure other things work
         util.raiseNotDefined()
 
         return action
@@ -135,14 +136,9 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        # print("state: ", state)
-        # print("reward: ", reward)
-        # print("discount: ", self.discount)
-        # print("max_Q(s')", self.computeValueFromQValues(nextState))
         sample = reward + self.discount * self.computeValueFromQValues(nextState)
-        # print("sample: ", sample)
         update = (1 - self.alpha) * self.computeValueFromQValues(state) + self.alpha * sample
-        # print("update: ", update)
+        self.values[(state, action)] = update
         return update
         util.raiseNotDefined()
 
