@@ -95,13 +95,17 @@ class QLearningAgent(ReinforcementAgent):
         pairs = []  #(action, Q-value for that action)
         for action in self.getLegalActions(state):
           pairs.append((action, self.getQValue(state, action)))
-        if pairs == []:
+        if len(pairs) <= 0: # == []:
           return None
-        best = pairs[0]
+        best = [pairs[0]]
         for (action, q) in pairs:
-          if q > best[1]:
-            best = (action, q)
-        return best[0]
+          if q == best[0][1] and best[0][0] != action:
+            best.append((action, q))
+          else:
+            if q > best[0][1]:
+              best = [(action, q)]
+        choice = random.choice(best)[0]
+        return choice
         util.raiseNotDefined()
 
     def getAction(self, state):
@@ -137,7 +141,7 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         sample = reward + self.discount * self.computeValueFromQValues(nextState)
-        update = (1 - self.alpha) * self.computeValueFromQValues(state) + self.alpha * sample
+        update = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * sample
         self.values[(state, action)] = update
         return update
         util.raiseNotDefined()
