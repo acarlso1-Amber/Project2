@@ -73,35 +73,18 @@ class ValueIterationAgent(ValueEstimationAgent):
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-        #print("iterations", self.iterations)
-        #print("runValueIteration called")
-
-        
-        #currentIteration = self.iterations
-        #this is self.mdp bc we need to call getStates on the mdp
         allPossibleStates = self.mdp.getStates()
 
-        #creates somewhere we can store data (as mentioned in class)
-        #values = util.Counter() 
-
-        #as long as our current iteration doesn't it zero
-        # print("current iteration: ", self.iterations)
-        # while (self.iterations > 0): 
-        #     # print("gets in the while loop")
-        #     for currentState in allPossibleStates: 
-        #         # print("this is currentIteration: ", currentIteration)
-        #         if not(self.mdp.isTerminal(currentState)):
-        #             action = self.getAction(currentState) 
-        #             self.values[currentState] = self.computeQValueFromValues(currentState, action)
-        #         else: 
-        #             continue
-        #     self.iterations -= 1
-
         for i in range(self.iterations):
-            for state in allPossibleStates: 
-                if not (self.mdp.isTerminal(state)):
-                    action = self.getAction(state) 
-                    self.values[state] = self.computeQValueFromValues(state, action)
+            aCounterOrSomething = util.Counter()
+            for state in allPossibleStates:
+                max_val = -1000000
+                for action in self.mdp.getPossibleActions(state):
+                    bestQValues = self.computeQValueFromValues(state, action)
+                    if bestQValues > max_val:
+                        max_val = bestQValues
+                    aCounterOrSomething[state] = max_val
+            self.values = aCounterOrSomething
        
 
     def getValue(self, state):
@@ -121,18 +104,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         transitions = self.mdp.getTransitionStatesAndProbs(state, action) # list of tuples of --> statePrime, probability
 
         for statePrime, probability in transitions: 
-            #print("state: ", state)
-            #print("statePrime", statePrime)
-            #print("probability: ", probability)
             value = self.values[statePrime]
             reward = self.mdp.getReward(state, action, statePrime)
-            #print("reward :", reward)
             Q += probability * (reward + (value*self.discount))#(pow(self.discount, self.iterations))))
-            #self.values[state] = Q 
         return Q
 
-        # print("computeQValueFromValues called")
-        # util.raiseNotDefined()
 
     #Travis, Amber, Wen 3/29/22
     def computeActionFromValues(self, state):
@@ -156,7 +132,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         actions = self.mdp.getPossibleActions(state)        
 
         bestAction = actions[0]
-        bestQ = - sys.maxsize - 1 #there is no minint :(
+        bestQ = -100000         #float("-inf")
 
         for action in actions:
             Q = self.computeQValueFromValues(state,action)
