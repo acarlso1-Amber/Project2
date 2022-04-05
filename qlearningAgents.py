@@ -208,6 +208,7 @@ class ApproximateQAgent(PacmanQAgent):
         """
         "*** YOUR CODE HERE ***"
         f = self.featExtractor.getFeatures(state, action)
+        #print("f: ", f)
         w = self.weights
         answer = 0.0
         for x in f:
@@ -220,26 +221,15 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "*** YOUR CODE HERE ***"
-        difference = (reward + self.discount * self.computeValueFromQValues(nextState)) - self.getQValue(state, action)
+        difference = (reward + self.discount * self.getValue(nextState)) - self.getQValue(state, action)
         for x in self.featExtractor.getFeatures(state, action):
           feat = self.featExtractor.getFeatures(state, action)[x]
-          # print("alpha: ", self.alpha)
-          # print("difference: ", difference)
-          # print("x: ", x)
-          # print("feat: ", feat)
+         
           if x in self.weights:
             self.weights[x] = self.weights[x] + self.alpha * difference * feat
           else:
-            self.weights[x] = self.alpha * difference * feat
-          return difference
-        # for i in range(len(self.featExtractor.getFeatures(state, action))):
-        #   if len(self.weights) > i:
-        #   else:
-        #     self.weights.append(self.alpha * difference * self.featExtractor.getFeatures(state, action)[i])
-        # return difference
-        # sample = reward + self.discount * self.computeValueFromQValues(nextState)
-        # update = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * sample
-
+            self.weights[x] = 1 + self.alpha * difference * feat
+        return 0.0
 
         util.raiseNotDefined()
 
