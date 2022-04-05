@@ -36,6 +36,7 @@ import sys
 
 #Project 2 Question 1
 #March 21, 2022
+#Travis, Amber, Wen
 class ValueIterationAgent(ValueEstimationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -106,13 +107,12 @@ class ValueIterationAgent(ValueEstimationAgent):
         for statePrime, probability in transitions: 
             value = self.values[statePrime]
             reward = self.mdp.getReward(state, action, statePrime)
-            Q += probability * (reward + (value*self.discount))#(pow(self.discount, self.iterations))))
+            Q += probability * (reward + (value*self.discount))
         return Q
 
 
     #Travis, Amber, Wen 3/29/22
     def computeActionFromValues(self, state):
-        #print("computeActionFromValues called")
         """
           computes the best action according to the value function given by self.values
 
@@ -124,7 +124,6 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        #print("computeActionFromValues is called")
 
         if self.mdp.isTerminal(state):
             return None
@@ -132,7 +131,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         actions = self.mdp.getPossibleActions(state)        
 
         bestAction = actions[0]
-        bestQ = -100000         #float("-inf")
+        bestQ = -100000
 
         for action in actions:
             Q = self.computeQValueFromValues(state,action)
@@ -155,21 +154,6 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         return max(qs)
 
-        # results = []
-        
-        # for action in actions:
-        #     Q = self.computeQValueFromValues(state,action)
-        #     results.append((action,Q))
-
-        # resultsDec = (sorted(results, key = lambda x: x[1]))
-        # resultsAsc = resultsDec[::-1]
-
-        # QStar = resultsAsc[0][1]
-        # BestAction = resultsAsc[0][0]
-
-
-        # return(BestAction)
-        # util.raiseNotDefined()
 
     def getPolicy(self, state):
         #print("getPolicy is called")
@@ -185,6 +169,7 @@ class ValueIterationAgent(ValueEstimationAgent):
         return self.computeQValueFromValues(state, action)
 
 #Travis, Wen 3/29/2022
+#Question 4
 class AsynchronousValueIterationAgent(ValueIterationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -212,7 +197,7 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
         """
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
         
-
+    #Travis, Wen 4/5/2022
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
 
@@ -227,16 +212,8 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
                 action = self.getAction(states[n])
                 self.values[states[n]] = self.computeQValueFromValues(states[n], action)
 
-
-
-        # n = ValueIterationAgent.n
-
-        # for i in range(self.iterations):
-        #     action = self.getAction(states[n])
-        #     self.values[states[n]] = self.computeQValueFromValues(states[n], action)
-        # n = n + 1
-
-
+#Travis, Wen 4/5/2022
+#Question 5
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     """
         * Please read learningAgents.py before reading this.*
@@ -258,82 +235,44 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
 
-    def locateKey(self, s, key):
-        #k=(key,(state,state))
-        print(s)
-        for k in s:
-            print(k)
-            if k[0]==key:
-                return k[1]
-
-        return None
-
+    #Travis, Wen, 4/5/2022
     def runValueIteration(self):
-        "*** YOUR CODE HERE ***"
-        #we define the predecessors of a state s as all states that have a nonzero probability of reaching s by taking some action a.
-        # states = self.mdp.getStates()
-        # predecessorAssociations = {}
-        # for state in states:
-        #     actions = self.mdp.getPossibleActions(state)
-        #     predecessors=[]
-        #     for action in actions:
-        #         transitions = self.mdp.getTransitionStatesAndProbs(state, action) #returns [(state,probability)]
-        #         for statePrime,probability in transitions:
-        #             if probability != 0.0 and (not statePrime in predecessors):
-        #                 predecessors.append(statePrime)
-        #     predecessorAssociations[state] = set(predecessors)
-        # #print(predecessorAssociations)
-        
-        
+                
         states = self.mdp.getStates()
-        predecessorAssociations = set()
+        predecessorAssociations = {}
         for state in states:
-            actions = self.mdp.getPossibleActions(state)
-            predecessors=[]
-            for action in actions:
-                transitions = self.mdp.getTransitionStatesAndProbs(state, action) #returns [(state,probability)]
-                for statePrime,probability in transitions:
-                    if probability != 0.0 and (not statePrime in predecessors):
-                        predecessors.append(statePrime)
-            predecessorAssociations.add(tuple(predecessors))
-        print(predecessorAssociations)
-
+            if not self.mdp.isTerminal(state):
+                actions = self.mdp.getPossibleActions(state)
+                for action in actions:
+                    transitions = self.mdp.getTransitionStatesAndProbs(state, action)
+                    for statePrime,probability in transitions:
+                        if (probability != 0.0):
+                            if statePrime in predecessorAssociations:
+                                predecessorAssociations[statePrime].add(state)
+                            else:
+                                predecessorAssociations[statePrime] = {state}
+        #print(predecessorAssociations)
         
         pq = util.PriorityQueue()
         #Build pq
         for state in states:
             if (not self.mdp.isTerminal(state)):
-                v = self.values[state]
+                v = self.getValue(state)
                 q = self.computeBestQ(state)
                 diff = abs(v-q)
-                pq.push(state,-diff)
+                pq.update(state,-diff)
         
         #Evaluate
-        # for i in range(self.iterations):
-        #     if (not pq.isEmpty()):
-        #         state = pq.pop()
-        #         if not self.mdp.isTerminal(state):
-        #             action = self.getAction(state) 
-        #             self.values[state] = self.computeQValueFromValues(state, action)
-        #             predecessors = predecessorAssociations[state]
-        #             for predecessor in predecessors:
-        #                 v = self.values[predecessor]
-        #                 q = self.computeBestQ(predecessor)
-        #                 diff = abs(v-q)
-        #                 if diff > self.theta:
-        #                     pq.update(predecessor,-diff)
-
         for i in range(self.iterations):
             if (not pq.isEmpty()):
                 state = pq.pop()
                 if not self.mdp.isTerminal(state):
                     action = self.getAction(state) 
                     self.values[state] = self.computeQValueFromValues(state, action)
-                    predecessors = self.locateKey(predecessorAssociations,state)
+                    predecessors = predecessorAssociations[state]
                     for predecessor in predecessors:
                         v = self.values[predecessor]
                         q = self.computeBestQ(predecessor)
                         diff = abs(v-q)
                         if diff > self.theta:
                             pq.update(predecessor,-diff)
-        
