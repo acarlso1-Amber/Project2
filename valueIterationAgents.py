@@ -257,26 +257,49 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
         self.theta = theta
         ValueIterationAgent.__init__(self, mdp, discount, iterations)
 
+
+    def locateKey(self, s, key):
+        #k=(key,(state,state))
+        print(s)
+        for k in s:
+            print(k)
+            if k[0]==key:
+                return k[1]
+
+        return None
+
     def runValueIteration(self):
         "*** YOUR CODE HERE ***"
         #we define the predecessors of a state s as all states that have a nonzero probability of reaching s by taking some action a.
+        # states = self.mdp.getStates()
+        # predecessorAssociations = {}
+        # for state in states:
+        #     actions = self.mdp.getPossibleActions(state)
+        #     predecessors=[]
+        #     for action in actions:
+        #         transitions = self.mdp.getTransitionStatesAndProbs(state, action) #returns [(state,probability)]
+        #         for statePrime,probability in transitions:
+        #             if probability != 0.0 and (not statePrime in predecessors):
+        #                 predecessors.append(statePrime)
+        #     predecessorAssociations[state] = set(predecessors)
+        # #print(predecessorAssociations)
+        
+        
         states = self.mdp.getStates()
-        predecessorAssociations = {}
+        predecessorAssociations = set()
         for state in states:
             actions = self.mdp.getPossibleActions(state)
             predecessors=[]
             for action in actions:
                 transitions = self.mdp.getTransitionStatesAndProbs(state, action) #returns [(state,probability)]
                 for statePrime,probability in transitions:
-                    if probability != 0 and (not statePrime in predecessors):
+                    if probability != 0.0 and (not statePrime in predecessors):
                         predecessors.append(statePrime)
-            predecessorAssociations[state] = tuple(predecessors)
-        #print(predecessorAssociations)
-
+            predecessorAssociations.add(tuple(predecessors))
+        print(predecessorAssociations)
 
         
         pq = util.PriorityQueue()
-
         #Build pq
         for state in states:
             if (not self.mdp.isTerminal(state)):
@@ -286,13 +309,27 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                 pq.push(state,-diff)
         
         #Evaluate
-        for i in range(self.iterations-1):
+        # for i in range(self.iterations):
+        #     if (not pq.isEmpty()):
+        #         state = pq.pop()
+        #         if not self.mdp.isTerminal(state):
+        #             action = self.getAction(state) 
+        #             self.values[state] = self.computeQValueFromValues(state, action)
+        #             predecessors = predecessorAssociations[state]
+        #             for predecessor in predecessors:
+        #                 v = self.values[predecessor]
+        #                 q = self.computeBestQ(predecessor)
+        #                 diff = abs(v-q)
+        #                 if diff > self.theta:
+        #                     pq.update(predecessor,-diff)
+
+        for i in range(self.iterations):
             if (not pq.isEmpty()):
                 state = pq.pop()
                 if not self.mdp.isTerminal(state):
                     action = self.getAction(state) 
                     self.values[state] = self.computeQValueFromValues(state, action)
-                    predecessors = predecessorAssociations[state]
+                    predecessors = self.locateKey(predecessorAssociations,state)
                     for predecessor in predecessors:
                         v = self.values[predecessor]
                         q = self.computeBestQ(predecessor)
